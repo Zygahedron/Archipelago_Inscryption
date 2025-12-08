@@ -219,7 +219,7 @@ namespace Archipelago_Inscryption.Components
 
             SaveEntry entry = entryIntance.GetComponent<SaveEntry>();
             int goalCount = (data.act1Completed ? 1: 0) + (data.act2Completed ? 1 : 0) + (data.act3Completed ? 1 : 0) + (data.epilogueCompleted ? 1 : 0);
-            entry.Init(entryName, lastSaveTime, data.playerCount, data.completedChecks.Count, data.totalLocationsCount, data.receivedItems.Count, data.totalItemsCount, goalCount, data.goalType, data.skipEpilogue, data.version);
+            entry.Init(entryName, lastSaveTime, data.playerCount, data.completedChecks.Count, data.totalLocationsCount, data.receivedItems.Count, data.totalItemsCount, goalCount, data.goalType, data.enableAct1, data.enableAct2, data.enableAct3, data.skipEpilogue, data.version);
 
             entry.onPlay.AddListener(delegate { OnSaveFileSelected(entryName); });
             entry.onDelete.AddListener(delegate { OnSaveFileDeleted(entryName); });
@@ -452,7 +452,7 @@ namespace Archipelago_Inscryption.Components
                 startScreen.gameObject.SetActive(true);
                 startScreen.Start();
 
-                if (ArchipelagoOptions.goal == Goal.AllActsAnyOrder)
+                if (ArchipelagoOptions.goal == Goal.ActsAnyOrder)
                 {
                     MenuCard chapterSelectCard = startScreen.menu.cards.First(c => c.MenuAction == MenuAction.NewGame);
 

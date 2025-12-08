@@ -15,6 +15,9 @@ namespace Archipelago_Inscryption.Archipelago
         internal static RandomizeDeck randomizeDeck = RandomizeDeck.Disable;
         internal static RandomizeSigils randomizeSigils = RandomizeSigils.Disable;
         internal static Goal goal;
+        internal static bool enableAct1 = false;
+        internal static bool enableAct2 = false;
+        internal static bool enableAct3 = false;
         internal static bool skipTutorial = false;
         internal static bool skipEpilogue = false;
         internal static EpitaphPiecesRandomization epitaphPiecesRandomization = EpitaphPiecesRandomization.AllPieces;

@@ -354,6 +354,12 @@ namespace Archipelago_Inscryption.Archipelago
                 ArchipelagoOptions.act1DeathLinkBehaviour = (Act1DeathLink)Convert.ToInt32(act1Deathlink);
             if (ArchipelagoClient.slotData.TryGetValue("optional_death_card", out var optionalDeathCard))
                 ArchipelagoOptions.optionalDeathCard = (OptionalDeathCard)Convert.ToInt32(optionalDeathCard);
+            if (ArchipelagoClient.slotData.TryGetValue("enable_act_1", out var enableAct1))
+                ArchipelagoOptions.enableAct1 = Convert.ToInt32(enableAct1) != 0;
+            if (ArchipelagoClient.slotData.TryGetValue("enable_act_2", out var enableAct2))
+                ArchipelagoOptions.enableAct2 = Convert.ToInt32(enableAct2) != 0;
+            if (ArchipelagoClient.slotData.TryGetValue("enable_act_3", out var enableAct3))
+                ArchipelagoOptions.enableAct3 = Convert.ToInt32(enableAct3) != 0;
             if (ArchipelagoClient.slotData.TryGetValue("goal", out var goal))
                 ArchipelagoOptions.goal = (Goal)Convert.ToInt32(goal);
             if (ArchipelagoClient.slotData.TryGetValue("randomize_codes", out var randomizeCodes))
@@ -374,6 +380,9 @@ namespace Archipelago_Inscryption.Archipelago
             ArchipelagoData.Data.totalLocationsCount = ArchipelagoClient.session.Locations.AllLocations.Count();
             ArchipelagoData.Data.totalItemsCount = ArchipelagoData.Data.totalLocationsCount;
             ArchipelagoData.Data.goalType = ArchipelagoOptions.goal;
+            ArchipelagoData.Data.enableAct1 = ArchipelagoOptions.enableAct1;
+            ArchipelagoData.Data.enableAct2 = ArchipelagoOptions.enableAct2;
+            ArchipelagoData.Data.enableAct3 = ArchipelagoOptions.enableAct3;
             ArchipelagoData.Data.skipEpilogue = ArchipelagoOptions.skipEpilogue;
 
             DeathLinkManager.DeathLinkService = ArchipelagoClient.session.CreateDeathLinkService();
@@ -535,13 +544,10 @@ namespace Archipelago_Inscryption.Archipelago
         {
             if (ArchipelagoData.Data == null || ArchipelagoData.Data.goalCompletedAndSent) return;
 
-            if ((ArchipelagoOptions.goal == Goal.AllActsInOrder || ArchipelagoOptions.goal == Goal.AllActsAnyOrder) && 
-                ArchipelagoData.Data.act1Completed && ArchipelagoData.Data.act2Completed && ArchipelagoData.Data.act3Completed &&
+            if ((!ArchipelagoOptions.enableAct1 || ArchipelagoData.Data.act1Completed) &&
+                (!ArchipelagoOptions.enableAct2 || ArchipelagoData.Data.act2Completed) &&
+                (!ArchipelagoOptions.enableAct3 || ArchipelagoData.Data.act3Completed) && 
                 (ArchipelagoOptions.skipEpilogue || ArchipelagoData.Data.epilogueCompleted))
-            {
-                ArchipelagoClient.SendGoalCompleted();
-            }
-            else if (ArchipelagoOptions.goal == Goal.Act1Only && ArchipelagoData.Data.act1Completed)
             {
                 ArchipelagoClient.SendGoalCompleted();
             }

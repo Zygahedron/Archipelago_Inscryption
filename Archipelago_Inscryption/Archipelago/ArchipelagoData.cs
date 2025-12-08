@@ -46,6 +46,9 @@ namespace Archipelago_Inscryption.Archipelago
         [JsonProperty("goalType")]
         internal Goal goalType = Goal.COUNT;
         [JsonProperty("skipEpilogue")]
+        internal bool enableAct1 = false;
+        internal bool enableAct2 = false;
+        internal bool enableAct3 = false;
         internal bool skipEpilogue = false;
 
         [JsonProperty("completedChecks")]

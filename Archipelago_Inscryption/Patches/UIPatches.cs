@@ -211,7 +211,7 @@ namespace Archipelago_Inscryption.Patches
                 __instance.titleLocId = "";
                 __instance.titleText = "CHAPTER SELECT";
                 __instance.lockAfterStoryEvent = false;
-                if (ArchipelagoOptions.goal == Goal.AllActsAnyOrder)
+                if (ArchipelagoOptions.goal == Goal.ActsAnyOrder || ArchipelagoOptions.enableAct2)
                     __instance.lockBeforeStoryEvent = false;
             }
 

@@ -31,9 +31,8 @@ namespace Archipelago_Inscryption.Archipelago
 
     internal enum Goal
     {
-        AllActsInOrder,
-        AllActsAnyOrder,
-        Act1Only,
+        ActsInOrder,
+        ActsAnyOrder,
         COUNT
     }
 
