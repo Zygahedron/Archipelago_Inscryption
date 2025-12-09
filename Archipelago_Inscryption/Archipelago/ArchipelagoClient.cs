@@ -98,7 +98,7 @@ namespace Archipelago_Inscryption.Archipelago
             {
                 session = CreateSession();
                 result = session.TryConnectAndLogin(
-                    "Inscryption",
+                    "Inscryption Beta",
                     ArchipelagoData.Data.slotName,
                     ItemsHandlingFlags.AllItems,
                     new Version(ArchipelagoVersion),
