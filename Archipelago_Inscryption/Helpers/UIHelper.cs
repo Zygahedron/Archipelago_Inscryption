@@ -116,8 +116,9 @@ namespace Archipelago_Inscryption.Helpers
             if (ArchipelagoOptions.goal == Goal.ActsInOrder)
             {
                 act1Button.SetActive(ArchipelagoOptions.enableAct1);
-                act2Button.SetActive(ArchipelagoOptions.enableAct2 && StoryEventsData.EventCompleted(StoryEvent.StartScreenNewGameUnlocked));
-                act3Button.SetActive(ArchipelagoOptions.enableAct3 && StoryEventsData.EventCompleted(StoryEvent.Part2Completed));
+                act2Button.SetActive(ArchipelagoOptions.enableAct2 && (StoryEventsData.EventCompleted(StoryEvent.StartScreenNewGameUnlocked) || !ArchipelagoOptions.enableAct1));
+                act3Button.SetActive(ArchipelagoOptions.enableAct3 && (StoryEventsData.EventCompleted(StoryEvent.Part2Completed) || !ArchipelagoOptions.enableAct2)
+                 && (StoryEventsData.EventCompleted(StoryEvent.StartScreenNewGameUnlocked) || !ArchipelagoOptions.enableAct1));
             }
             else
             {

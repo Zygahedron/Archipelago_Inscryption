@@ -452,7 +452,7 @@ namespace Archipelago_Inscryption.Components
                 startScreen.gameObject.SetActive(true);
                 startScreen.Start();
 
-                if (ArchipelagoOptions.goal == Goal.ActsAnyOrder)
+                if (ArchipelagoOptions.goal == Goal.ActsAnyOrder || !ArchipelagoOptions.enableAct1)
                 {
                     MenuCard chapterSelectCard = startScreen.menu.cards.First(c => c.MenuAction == MenuAction.NewGame);
 
