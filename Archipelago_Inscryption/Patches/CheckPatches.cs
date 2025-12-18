@@ -654,20 +654,38 @@ namespace Archipelago_Inscryption.Patches
                     Transform clue = __instance.transform.Find("Splatter/clue");
                     clue.GetComponent<MeshRenderer>().material.mainTexture = AssetsManager.factoryClockClueTexs[ArchipelagoData.Data.factoryClockCode[2]];
                     break;
-                case "HoloMapArea_UndeadMainPath2(Clone)":
-                    if (ArchipelagoOptions.randomizeHammer != RandomizeHammer.Vanilla)
+                case "HoloMapArea_UndeadMainPath_2(Clone)":
+                    if (ArchipelagoOptions.randomizeShortcuts != RandomizeShortcuts.Vanilla)
                         RandomizerHelper.CreateHoloMapNodeCheck(__instance.transform.Find("Nodes/DialogueNode3D").gameObject, APCheck.FactoryFilthyCorpseWorldShortcut);
                     break;
                 case "HoloMapArea_NatureMainPath_4(Clone)":
-                    if (ArchipelagoOptions.randomizeHammer != RandomizeHammer.Vanilla)
+                    if (ArchipelagoOptions.randomizeShortcuts != RandomizeShortcuts.Vanilla)
                         RandomizerHelper.CreateHoloMapNodeCheck(__instance.transform.Find("Nodes/DialogueNode3D").gameObject, APCheck.FactoryFoulBackwaterShortcut);
                     break;
-                case "HoloMapArea_WizardMainPath_5(Clone)":
-                    if (ArchipelagoOptions.randomizeHammer != RandomizeHammer.Vanilla)
+                case"HoloMapArea_WizardMainPath_5(Clone)":
+                    if (ArchipelagoOptions.randomizeShortcuts != RandomizeShortcuts.Vanilla)
                         RandomizerHelper.CreateHoloMapNodeCheck(__instance.transform.Find("Nodes/DialogueNode3D").gameObject, APCheck.FactoryGaudyGemLandShortcut);
                     break;
-
             }
+        }
+
+        [HarmonyPatch(typeof(HoloMapDialogueNode), "DialogueSequence")]
+        [HarmonyPrefix]
+        static bool GiveShortcutDialogueCheck(HoloMapDialogueNode __instance)
+        {
+            APCheck check;
+
+            if (__instance.transform.parent.parent.gameObject.name == "HoloMapArea_UndeadMainPath2(Clone)")
+                check = APCheck.FactoryFilthyCorpseWorldShortcut;
+            else if (__instance.transform.parent.parent.gameObject.name == "HoloMapArea_NatureMainPath_4(Clone)")
+                check = APCheck.FactoryFoulBackwaterShortcut;
+            else if (__instance.transform.parent.parent.gameObject.name == "HoloMapArea_WizardMainPath_5(Clone)")
+                check = APCheck.FactoryGaudyGemLandShortcut;
+            else
+                return true;
+
+            ArchipelagoManager.SendCheck(check);
+            return false;
         }
 
         [HarmonyPatch(typeof(InspectionMachineInteractable), "Start")]
