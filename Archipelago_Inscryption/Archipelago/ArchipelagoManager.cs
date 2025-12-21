@@ -297,10 +297,18 @@ namespace Archipelago_Inscryption.Archipelago
             }
             else if (receivedItem == APItem.VesselUpgrade)
             {
+                List<Ability> validVesselUpgrades = [Ability.WhackAMole, Ability.Sharp, Ability.GuardDog, 
+                    Ability.Reach, Ability.RandomAbility, Ability.GainBattery, Ability.ExplodeOnDeath, Ability.DeathShield, 
+                    Ability.LatchExplodeOnDeath, Ability.LatchDeathShield, Ability.LatchBrittle, Ability.Sentry, 
+                    Ability.DrawVesselOnHit, Ability.DebuffEnemy, Ability.CellBuffSelf, Ability.CellDrawRandomCardOnDeath];
+                foreach (Ability sigil in Part3SaveData.Data.sideDeckAbilities)
+                {
+                    if (validVesselUpgrades.Contains(sigil)) validVesselUpgrades.Remove(sigil);
+                }
                 int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
-                Ability randomSigil = ArchipelagoData.Data.validVesselUpgrades[SeededRandom.Range(0, ArchipelagoData.Data.validVesselUpgrades.Count, seed++)];
+                Ability randomSigil = validVesselUpgrades[SeededRandom.Range(0, validVesselUpgrades.Count, seed++)];
                 Part3SaveData.Data.sideDeckAbilities.Add(randomSigil);
-                ArchipelagoData.Data.validVesselUpgrades.Remove(randomSigil);
+                validVesselUpgrades.Remove(randomSigil);
             }
             else if (receivedItem == APItem.ConduitUpgrade)
             {
