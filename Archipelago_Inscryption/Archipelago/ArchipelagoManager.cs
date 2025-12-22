@@ -308,7 +308,6 @@ namespace Archipelago_Inscryption.Archipelago
                 int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
                 Ability randomSigil = validVesselUpgrades[SeededRandom.Range(0, validVesselUpgrades.Count, seed++)];
                 Part3SaveData.Data.sideDeckAbilities.Add(randomSigil);
-                validVesselUpgrades.Remove(randomSigil);
             }
             else if (receivedItem == APItem.ConduitUpgrade)
             {
