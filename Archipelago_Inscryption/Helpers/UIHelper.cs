@@ -126,9 +126,9 @@ namespace Archipelago_Inscryption.Helpers
                 act2Button.SetActive(ArchipelagoOptions.enableAct2);
                 act3Button.SetActive(ArchipelagoOptions.enableAct3);
             }
-            epilogueButton.SetActive((ArchipelagoOptions.enableAct1 || ArchipelagoData.Data.act1Completed) && 
-            (ArchipelagoOptions.enableAct2 || ArchipelagoData.Data.act2Completed) && 
-            (ArchipelagoOptions.enableAct3 || ArchipelagoData.Data.act3Completed));
+            epilogueButton.SetActive((!ArchipelagoOptions.enableAct1 || ArchipelagoData.Data.act1Completed) && 
+            (!ArchipelagoOptions.enableAct2 || ArchipelagoData.Data.act2Completed) && 
+            (!ArchipelagoOptions.enableAct3 || ArchipelagoData.Data.act3Completed));
         }
     }
 }
