@@ -55,15 +55,15 @@ GBC_Temple_Wizard/Temple/BathRoom
 # entrance names
 
 Starting Island Exit: GBC_Starting_Island/Room/ReturnToMapVolume
-World Map Starting Island: GBC_WorldMap/????
-World Map Broken Bridge: GBC_WorldMap/???? <--- not randomized
+World Map Starting Island: Map/NavigationGrid/StartingIsland
+World Map Broken Bridge: Map/NavigationGrid/Central Island <--- not randomized
 Broken Bridge Exit: GBC_Broken_Bridge/Room/ReturnToMapVolume <--- not randomized
-World Map Docks: GBC_WorldMap/????
+World Map Docks: Map/NavigationGrid/Nature Docks
 Docks Exit: GBC_Docks/Room/ReturnToMapVolume
 World Map Mycologists' Hut: GBC_WorldMap/????
 Mycologists' Hut Exit: GBC_Mycologist_Hut/Room/ReturnToMapVolume
 
-World Map Forest: GBC_WorldMap/????
+World Map Forest: Map/NavigationGrid/Nature Temple
 Forest Exit: GBC_Temple_Nature/Temple/OutdoorsCentral/ReturnToMapVolume
 Forest Past Prospector: GBC_Temple_Nature/Temple/OutdoorsCentral/Floor/ChangeRoomVolume_Pond
 Pond Exit: GBC_Temple_Nature/Temple/Pond/Floor/ChangeRoomVolume
@@ -75,10 +75,10 @@ Meadow Hidden Path: GBC_Temple_Nature/Temple/Meadow/ChangeRoomVolume
 Woodcarver Room Exit: GBC_Temple_Nature/Temple/Woodcarver/ChangeRoomVolume
 Forest Cabin Entrance: GBC_Temple_Nature/Temple/OutdoorsCentral/Cabin/ChangeRoomVolume
 Cabin Exit: GBC_Temple_Nature/Temple/Cabin/Floor/ChangeRoomVolume_Outdoors
-Cabin Shop Entrance: GBC_Temple_Nature/Temple/Cabin/Floor/ChangeRoomVolume_Outdoors
+Cabin Shop Entrance: GBC_Temple_Nature/Temple/Cabin/Floor/ChangeRoomVolume
 Cabin Shop Exit: GBC_Temple_Nature/Temple/Shop/Floor/ChangeRoomVolume
 
-World Map Crypt: GBC_WorldMap/????
+World Map Crypt: Map/NavigationGrid/Undead Temple
 Crypt Exit: GBC_Temple_Undead/Temple/MainRoom/Floor/ReturnToMapVolume
 Crypt Shop Entrance: GBC_Temple_Undead/Temple/MainRoom/Floor/ChangeRoomVolume
 Crypt Shop Exit: GBC_Temple_Undead/Temple/ShopRoom/Floor/ChangeRoomVolume
@@ -101,8 +101,8 @@ Factory to Inspection Room: GBC_Temple_Tech/Temple/--- MainRoom ---/Floor/Change
 Inspection Room Exit: GBC_Temple_Tech/Temple/--- AssemblyRoom ---/Floor/ChangeRoomVolume
 Inspection Room to Smelting Room: GBC_Temple_Tech/Temple/--- AssemblyRoom ---/Floor/ChangeRoomVolume
 Smelting Room Exit: GBC_Temple_Tech/Temple/--- SmelterRoom ---/Floor/ChangeRoomVolume
-Smelting Room Elevator Down: GBC_Temple_Tech/Temple/--- SmelterRoom ---/Objects/Elevator/HoleVolume/DropEndPoint (Elevator/ExitPoint for the point where you end up after entering from elevator)
-Dredging Room Elevator Up: GBC_Temple_Tech/Temple/--- DredgingRoom ---/Objects/Elevator/HoleVolume/DropStartPoint
+Smelting Room Elevator Down: Temple/--- SmelterRoom ---/Objects/Elevator/HoleVolume (Elevator/ExitPoint for the point where you end up after entering from elevator)
+Dredging Room Elevator Up: Temple/--- DredgingRoom ---/Objects/Elevator/HoleVolume
 
 World Map Tower: GBC_WorldMap/????
 Tower 1st Floor Exit: GBC_Temple_Wizard/Temple/Floor_1/Floor/ReturnToMapVolume
