@@ -617,7 +617,7 @@ namespace Archipelago_Inscryption.Patches
 
             foreach (CardInfo card in Part3SaveData.Data.deck.Cards)
             {
-                CardPatches.RandomizeSigils(card, ref randomSeed);
+                CardPatches.RandomizeSigils(card);
             }
             Part3SaveData.Data.deck.UpdateModDictionary();
 

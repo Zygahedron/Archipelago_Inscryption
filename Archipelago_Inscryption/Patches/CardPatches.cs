@@ -1,9 +1,9 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using Archipelago_Inscryption.Archipelago;
 using DiskCardGame;
 using HarmonyLib;
 using UnityEngine;
@@ -13,12 +13,9 @@ namespace Archipelago_Inscryption.Patches
     [HarmonyPatch]
     internal class CardPatches
     {
+        static int nodeId = 0;
+        static int nodeOffset = 0;
         public static void RandomizeSigils(CardInfo card)
-        {
-            int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
-            RandomizeSigils(card, ref seed);
-        }
-        public static void RandomizeSigils(CardInfo card, ref int seed)
         {
             ScriptableObjectLoader<AbilityInfo>.LoadData("Abilities");
             List<AbilityInfo> learnedAbilities;
@@ -48,6 +45,16 @@ namespace Archipelago_Inscryption.Patches
                 return;
             }
             var replacement = new SigilReplacementInfo();
+            int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
+            if (nodeId != RunState.Run.currentNodeId)
+            {
+                nodeId = RunState.Run.currentNodeId;
+                nodeOffset = 0;
+            }
+            seed += nodeOffset * 44;
+            // 44 is arbitrary, to make sequential nodes not get the same seeds
+            // because inscryption's rng kinda sucks actually
+            nodeOffset++;
             for (int i = 0; i < card.abilities.Count; i++)
             {
                 var newAbility = learnedAbilities[SeededRandom.Range(0, learnedAbilities.Count, seed++)];
@@ -65,10 +72,9 @@ namespace Archipelago_Inscryption.Patches
         [HarmonyPostfix]
         static void RandomizeDirectCardChoiceSigils(ref List<CardChoice> __result)
         {
-            int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
             foreach (var choice in __result)
             {
-                RandomizeSigils(choice.CardInfo, ref seed);
+                RandomizeSigils(choice.CardInfo);
             }
         }
         [HarmonyPatch(typeof(TradePeltsSequencer), "GetTradeCardInfos")]
@@ -76,10 +82,9 @@ namespace Archipelago_Inscryption.Patches
         [HarmonyPostfix]
         static void RandomizeDirectCardInfoSigils(ref List<CardInfo> __result)
         {
-            int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
             foreach (var card in __result)
             {
-                RandomizeSigils(card, ref seed);
+                RandomizeSigils(card);
             }
         }
         [HarmonyPatch(typeof(GainConsumablesSequencer), "FullConsumablesSequence")]
@@ -188,6 +193,94 @@ namespace Archipelago_Inscryption.Patches
             four.transform.localPosition = three.transform.localPosition;
             four.transform.localScale = three.transform.localScale;
             __instance.defaultIconGroups.Add(four);
+        }
+
+        [HarmonyPatch(typeof(ItemSlot), "CreateItem", [typeof(ItemData), typeof(bool)])]
+        [HarmonyPrefix]
+        static void DontModifyItemTemplates(ref ItemData data)
+        {
+            var name = data.name;
+            data = UnityEngine.Object.Instantiate(data);
+            data.name = name;
+        }
+        [HarmonyPatch(typeof(ItemSlot), "CreateItem", [typeof(ItemData), typeof(bool)])]
+        [HarmonyPostfix]
+        static void RandomizeBottleSigil(ItemData data, bool skipDropAnimation, ItemSlot __instance)
+        {
+            if (__instance.Item is CardBottleItem)
+            {
+                var bottle = __instance.Item as CardBottleItem;
+                var info = UnityEngine.Object.Instantiate(bottle.cardInfo);
+                info.name = bottle.cardInfo.name;
+                if (data.name.Contains("$"))
+                {
+                    var replacement = new SigilReplacementInfo();
+                    replacement.abilities.Add((Ability)Enum.Parse(typeof(Ability), data.name.Substring(data.name.IndexOf("$") + 1)));
+                    info.mods.Add(replacement);
+                }
+                else
+                {
+                    RandomizeSigils(info);
+                    var mod = info.mods.Find(m => m is SigilReplacementInfo);
+                    if (mod is not null)
+                    {
+                        data.name += "$" + mod.abilities[0].ToString();
+                    }
+                }
+                bottle.cardInfo = info;
+                var card = bottle.GetComponentInChildren<SelectableCard>();
+                var card2 = UnityEngine.Object.Instantiate(card);
+                card2.name = card.name;
+                card2.SetInfo(info);
+                card2.transform.parent = card.transform.parent;
+                card2.transform.localPosition = card.transform.localPosition;
+                card2.transform.localRotation = card.transform.localRotation;
+                card.gameObject.SetActive(false);
+                card.transform.parent = null;
+                UnityEngine.Object.Destroy(card);
+            }
+        }
+
+        [HarmonyPatch(typeof(CardBottleItem), "ActivateSequence")]
+        [HarmonyPostfix] // enumerators are weird. postfix without calling __result.MoveNext() lets us replace the functionality
+        static IEnumerator GiveCardWithBottleSigil(IEnumerator __result, CardBottleItem __instance)
+        {
+            __instance.PlayExitAnimation();
+            yield return __instance.StartCoroutine(Singleton<CardSpawner>.Instance.SpawnCardToHand(__instance.cardInfo));
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        [HarmonyPatch(typeof(ItemsUtil), "GetConsumableByName")]
+        [HarmonyPrefix]
+        static void GetCorrectBottleItem(ref string name, ref string __state)
+        {
+            __state = name;
+            if (name.Contains("$"))
+            {
+                name = name.Substring(0, name.IndexOf("$"));
+            }
+        }
+
+        [HarmonyPatch(typeof(ItemsUtil), "GetConsumableByName")]
+        [HarmonyPostfix]
+        static void RememberBottleSigil(ref ConsumableItemData __result, string __state)
+        {
+            __result = UnityEngine.Object.Instantiate(__result);
+            __result.name = __state;
+        }
+
+        [HarmonyPatch(typeof(ItemsManager), "UpdateItems")]
+        [HarmonyPostfix]
+        static void FixBottlesInSaveFile(ref ItemsManager __instance)
+        {
+            __instance.SaveDataItemsList.Clear();
+            foreach (var slot in __instance.consumableSlots)
+            {
+                if (slot.Item is not null)
+                {
+                    __instance.SaveDataItemsList.Add(slot.Item.Data.name);
+                }
+            }
         }
     }
 }
