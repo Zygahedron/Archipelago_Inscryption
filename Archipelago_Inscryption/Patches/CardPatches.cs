@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using DiskCardGame;
+using GBC;
 using HarmonyLib;
 using UnityEngine;
 
@@ -55,6 +56,35 @@ namespace Archipelago_Inscryption.Patches
             // 44 is arbitrary, to make sequential nodes not get the same seeds
             // because inscryption's rng kinda sucks actually
             nodeOffset++;
+            for (int i = 0; i < card.abilities.Count; i++)
+            {
+                var newAbility = learnedAbilities[SeededRandom.Range(0, learnedAbilities.Count, seed++)];
+                replacement.abilities.Add(newAbility.ability);
+                learnedAbilities.Remove(newAbility);
+            }
+            if (replacement.abilities.Count <= 0) return;
+            card.mods.Add(replacement);
+        }
+
+        public static void RandomizeSigilsAct2(CardInfo card)
+        {
+            List<AbilityInfo> learnedAbilities = ScriptableObjectLoader<AbilityInfo>.allData.FindAll(
+                x => x.pixelIcon != null
+                && x.ability != Ability.ActivatedSacrificeDrawCards
+                && x.ability != Ability.CreateEgg
+                && x.ability != Ability.HydraEgg
+                && x.ability != Ability.Tutor
+            );
+            // string hash function: djb2 by Dan Bernstein via http://www.cse.yorku.ca/~oz/hash.html
+            var hash = 5381;
+            foreach (char c in card.displayedName)
+            {
+                hash = (hash << 5) + hash + c;
+            }
+            var seed = hash ^ SaveManager.SaveFile.randomSeed;
+
+            card.mods = new List<CardModificationInfo>();
+            var replacement = new SigilReplacementInfo();
             for (int i = 0; i < card.abilities.Count; i++)
             {
                 var newAbility = learnedAbilities[SeededRandom.Range(0, learnedAbilities.Count, seed++)];
@@ -281,6 +311,72 @@ namespace Archipelago_Inscryption.Patches
                     __instance.SaveDataItemsList.Add(slot.Item.Data.name);
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(CardCollectionInfo), "LoadCards")]
+        [HarmonyPostfix]
+        static void Act2RandomizeSigilsOnLoad(CardCollectionInfo __instance)
+        {
+            if (!SaveManager.SaveFile.IsPart2)
+            {
+                return;
+            }
+            foreach (var card in __instance.CardInfos)
+            {
+                RandomizeSigilsAct2(card);
+            }
+        }
+
+        [HarmonyPatch(typeof(CardCollectionInfo), "AddCard")]
+        [HarmonyPrefix]
+        static bool Act2AddRandomizedCard(CardInfo card, CardCollectionInfo __instance, CardInfo __result)
+        {
+            if (!SaveManager.SaveFile.IsPart2)
+            {
+                return true;
+            }
+            CardInfo cardInfo = card.Clone() as CardInfo;
+            RandomizeSigilsAct2(cardInfo);
+            __instance.Cards.Add(cardInfo);
+            __instance.cardIds.Add(card.name);
+            __result = cardInfo;
+            return false;
+        }
+
+        [HarmonyPatch(typeof(PackOpeningUI), "AssignInfoToCards")]
+        [HarmonyPostfix]
+        static void Act2RandomizeCardPackSigils(PackOpeningUI __instance)
+        {
+            for (var i = 0; i < __instance.cards.Count; i++)
+            {
+                var info = UnityEngine.Object.Instantiate(__instance.cards[i].Info);
+                info.name = __instance.cards[i].Info.name;
+                RandomizeSigilsAct2(info);
+                __instance.cards[i].SetInfo(info);
+            }
+        }
+
+        [HarmonyPatch(typeof(ShopUI), "UpdateInventory")]
+        [HarmonyPrefix]
+        static void Act2RandomizeShopSigils(List<CardInfo> inventory)
+        {
+            for (var i = 0; i < inventory.Count; i++)
+            {
+                var info = UnityEngine.Object.Instantiate(inventory[i]);
+                info.name = inventory[i].name;
+                RandomizeSigilsAct2(info);
+                inventory[i] = info;
+            }
+        }
+
+        [HarmonyPatch(typeof(SingleCardGainUI), "GainCard")]
+        [HarmonyPrefix]
+        static void Act2RandomizeSingleCardSigils(ref CardInfo card)
+        {
+            var info = UnityEngine.Object.Instantiate(card);
+            info.name = card.name;
+            RandomizeSigilsAct2(info);
+            card = info;
         }
     }
 }
