@@ -386,6 +386,8 @@ namespace Archipelago_Inscryption.Archipelago
                 ArchipelagoOptions.enableAct2 = Convert.ToInt32(enableAct2) != 0;
             if (ArchipelagoClient.slotData.TryGetValue("enable_act_3", out var enableAct3))
                 ArchipelagoOptions.enableAct3 = Convert.ToInt32(enableAct3) != 0;
+            if (ArchipelagoClient.slotData.TryGetValue("act_unlocks", out var actUnlocks))
+                ArchipelagoOptions.actUnlocks = (ActUnlocks)Convert.ToInt32(actUnlocks);
             if (ArchipelagoClient.slotData.TryGetValue("goal", out var goal))
                 ArchipelagoOptions.goal = (Goal)Convert.ToInt32(goal);
             if (ArchipelagoClient.slotData.TryGetValue("randomize_codes", out var randomizeCodes))
@@ -574,17 +576,31 @@ namespace Archipelago_Inscryption.Archipelago
             return ArchipelagoData.Data.receivedItems.Any(x => x.Item == item);
         }
 
+        internal static bool MetEpilogueRequirements()
+        {
+            int enabled = 0;
+            if (ArchipelagoOptions.enableAct1) enabled++;
+            if (ArchipelagoOptions.enableAct2) enabled++;
+            if (ArchipelagoOptions.enableAct3) enabled++;
+            int completed = 0;
+            if (ArchipelagoData.Data.act1Completed) completed++;
+            if (ArchipelagoData.Data.act1Completed) completed++;
+            if (ArchipelagoData.Data.act1Completed) completed++;
+            bool finished = ArchipelagoData.Data.goalType switch {
+                Goal.OneAct => completed >= 1 || completed >= enabled,
+                Goal.TwoActs => completed >= 2 || completed >= enabled,
+                Goal.AllActs => completed >= enabled,
+                _ => false,
+            };
+            return finished;
+        }
+
         internal static void VerifyGoalCompletion()
         {
             if (ArchipelagoData.Data == null || ArchipelagoData.Data.goalCompletedAndSent) return;
 
-            if ((!ArchipelagoOptions.enableAct1 || ArchipelagoData.Data.act1Completed) &&
-                (!ArchipelagoOptions.enableAct2 || ArchipelagoData.Data.act2Completed) &&
-                (!ArchipelagoOptions.enableAct3 || ArchipelagoData.Data.act3Completed) && 
-                (ArchipelagoOptions.skipEpilogue || ArchipelagoData.Data.epilogueCompleted))
-            {
+            if (MetEpilogueRequirements() && (ArchipelagoOptions.skipEpilogue || ArchipelagoData.Data.epilogueCompleted)) 
                 ArchipelagoClient.SendGoalCompleted();
-            }
         }
 
         internal static CheckInfo GetCheckInfo(APCheck check)

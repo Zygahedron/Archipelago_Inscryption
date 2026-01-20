@@ -30,20 +30,22 @@ namespace Archipelago_Inscryption.Archipelago
         COUNT
     }
 
-        internal enum RandomizeShortcuts
+    internal enum RandomizeShortcuts
     {
         Vanilla,
         Randomize,
         Open,
         COUNT
     }
-        internal enum RandomizeVesselUpgrades
+
+    internal enum RandomizeVesselUpgrades
     {
         Vanilla,
         Randomize,
         RemoveOne,
         COUNT
     }
+
     internal enum OptionalDeathCard
     {
         Disable,
@@ -52,10 +54,19 @@ namespace Archipelago_Inscryption.Archipelago
         COUNT
     }
 
+    internal enum ActUnlocks
+    {
+        Sequential,
+        Open,
+        Items,
+        COUNT
+    }
+
     internal enum Goal
     {
-        ActsInOrder,
-        ActsAnyOrder,
+        OneAct,
+        TwoActs,
+        AllActs,
         COUNT
     }
 

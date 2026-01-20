@@ -44,7 +44,7 @@ namespace Archipelago_Inscryption.Helpers
         }
         internal static Components.InputField CreateInputField(OptionsUI menu, Transform parent, string name, string label, string defaultContent, float yPosition, int characterLimit, bool censor = false)
         {
-            if (inputFieldPrefab is null)
+            if (inputFieldPrefab == null)
             {
                 CreateInputFieldTemplate(menu);
             }

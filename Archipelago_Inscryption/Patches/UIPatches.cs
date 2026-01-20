@@ -110,13 +110,19 @@ namespace Archipelago_Inscryption.Patches
 
             menu.cards = [];
 
-            var inOrder = ArchipelagoData.Data.goalType == Goal.ActsInOrder;
+            var inOrder = ArchipelagoOptions.actUnlocks == ActUnlocks.Sequential;
+            var items = ArchipelagoOptions.actUnlocks == ActUnlocks.Items;
             var locked = false;
 
             if (ArchipelagoData.Data.enableAct1)
             {
                 var startedAct1 = SaveManager.SaveFile.storyEvents.completedEvents.Contains(StoryEvent.BasicTutorialCompleted);
                 var completedAct1 = ArchipelagoData.Data.act1Completed;
+                if (items) 
+                {
+                    if (!ArchipelagoManager.HasItem(APItem.Act1)) locked = true;
+                    else locked = false;
+                }
 
                 act1NewRun.SetEnabled(true);
                 act1NewRun.gameObject.SetActive(true);
@@ -124,13 +130,19 @@ namespace Archipelago_Inscryption.Patches
                 act1NewRun.titleText = startedAct1 ? "New Act 1 Run" : "Start Act 1";
                 act1NewRun.GetComponent<SpriteRenderer>().sprite = AssetsManager.menuCardAct1NewRun;
 
-                if (startedAct1)
+                if (startedAct1 && !locked)
                 {
                     act1.SetEnabled(true);
                     act1.gameObject.SetActive(true);
                     menu.cards.Add(act1);
                     act1.titleText = completedAct1 ? "Continue Act 1 (Complete!)" : "Continue Act 1";
                     act1.GetComponent<SpriteRenderer>().sprite = completedAct1 ? AssetsManager.menuCardAct1Complete : AssetsManager.menuCardAct1Continue;
+                }
+                if (locked)
+                {
+                    act1NewRun.permanentlyLocked = true;
+                    act1NewRun.titleText = "Locked";
+                    act1NewRun.GetComponent<SpriteRenderer>().sprite = AssetsManager.menuCardAct1Locked;
                 }
 
                 if (inOrder && !completedAct1) locked = true;
@@ -140,6 +152,11 @@ namespace Archipelago_Inscryption.Patches
             {
                 var startedAct2 = SaveManager.SaveFile.storyEvents.completedEvents.Contains(StoryEvent.GBCIntroCompleted);
                 var completedAct2 = ArchipelagoData.Data.act2Completed;
+                if (items)
+                {
+                    if (!ArchipelagoManager.HasItem(APItem.Act2)) locked = true;
+                    else locked = false;
+                }
 
                 act2.SetEnabled(true);
                 act2.gameObject.SetActive(true);
@@ -158,10 +175,15 @@ namespace Archipelago_Inscryption.Patches
                 if (inOrder && !completedAct2) locked = true;
             }
 
-            if (ArchipelagoData.Data.enableAct2)
+            if (ArchipelagoData.Data.enableAct3)
             {
                 var startedAct3 = SaveManager.SaveFile.storyEvents.completedEvents.Contains(StoryEvent.Part3Intro);
                 var completedAct3 = ArchipelagoData.Data.act3Completed;
+                if (items) 
+                {
+                    if (!ArchipelagoManager.HasItem(APItem.Act3)) locked = true;
+                    else locked = false;
+                }
 
                 act3.SetEnabled(true);
                 act3.gameObject.SetActive(true);

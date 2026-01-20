@@ -18,6 +18,7 @@ namespace Archipelago_Inscryption.Archipelago
         internal static RandomizeHammer randomizeHammer = RandomizeHammer.Vanilla;
         internal static RandomizeShortcuts randomizeShortcuts = RandomizeShortcuts.Vanilla;
         internal static RandomizeVesselUpgrades randomizeVesselUpgrades = RandomizeVesselUpgrades.Vanilla;
+        internal static ActUnlocks actUnlocks;
         internal static Goal goal;
         internal static bool enableAct1 = false;
         internal static bool enableAct2 = false;

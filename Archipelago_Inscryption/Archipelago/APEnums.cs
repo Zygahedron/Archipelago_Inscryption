@@ -160,6 +160,9 @@
         VesselUpgrade,
         ConduitUpgrade,
         Hammer,
+        Act1,
+        Act2,
+        Act3,
         Currency,
         CardPack,
         COUNT
