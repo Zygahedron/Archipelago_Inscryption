@@ -54,6 +54,13 @@ namespace Archipelago_Inscryption.Archipelago
         [JsonProperty("skipEpilogue")]
         internal bool skipEpilogue = false;
 
+        [JsonProperty("vesselUpgrade1Location")]
+        internal string vesselUpgrade1Location = "";
+        [JsonProperty("vesselUpgrade2Location")]
+        internal string vesselUpgrade2Location = "";
+        [JsonProperty("vesselUpgrade3Location")]
+        internal string vesselUpgrade3Location = "";
+
         [JsonProperty("completedChecks")]
         internal List<long> completedChecks = new List<long>();
         [JsonProperty("receivedItems")]

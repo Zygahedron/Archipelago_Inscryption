@@ -15,7 +15,8 @@ namespace Archipelago_Inscryption.Patches
         [HarmonyPrefix]
         static bool RandomizeDeckAct1(MapNode __instance)
         {
-            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable)
+            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && 
+                (ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable || ArchipelagoOptions.randomizeSigils == RandomizeSigils.RandomizeOnce))
                 return true;
 
             int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
@@ -91,7 +92,7 @@ namespace Archipelago_Inscryption.Patches
                 RunState.Run.playerDeck.cardIds = newCardsIds;
             }
 
-            if (ArchipelagoOptions.randomizeSigils != RandomizeSigils.Disable)
+            if (ArchipelagoOptions.randomizeSigils != RandomizeSigils.Disable && ArchipelagoOptions.randomizeSigils != RandomizeSigils.RandomizeOnce)
             {
                 foreach (CardInfo c in RunState.Run.playerDeck.Cards)
                 {
@@ -162,7 +163,8 @@ namespace Archipelago_Inscryption.Patches
         [HarmonyPrefix]
         static bool RandomizeDeckAct2()
         {
-            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable)
+            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && 
+                (ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable || ArchipelagoOptions.randomizeSigils == RandomizeSigils.RandomizeOnce))
                 return true;
 
             int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
@@ -332,7 +334,8 @@ namespace Archipelago_Inscryption.Patches
         [HarmonyPrefix]
         static bool RandomizeDeckAct3()
         {
-            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable)
+            if ((ArchipelagoOptions.randomizeDeck == RandomizeDeck.Disable || ArchipelagoOptions.randomizeDeck == RandomizeDeck.StarterOnly) && 
+                (ArchipelagoOptions.randomizeSigils == RandomizeSigils.Disable || ArchipelagoOptions.randomizeSigils == RandomizeSigils.RandomizeOnce))
                 return true;
 
             int seed = SaveManager.SaveFile.GetCurrentRandomSeed();
@@ -412,7 +415,7 @@ namespace Archipelago_Inscryption.Patches
                 Part3SaveData.Data.deck.cardIds = newCardsIds;
             }
 
-            if (ArchipelagoOptions.randomizeSigils != RandomizeSigils.Disable)
+            if (ArchipelagoOptions.randomizeSigils != RandomizeSigils.Disable && ArchipelagoOptions.randomizeSigils != RandomizeSigils.RandomizeOnce)
             {
                 foreach (CardInfo card in Part3SaveData.Data.deck.Cards)
                 {
@@ -424,25 +427,22 @@ namespace Archipelago_Inscryption.Patches
                             continue;
                         }
 
-                        if (ArchipelagoOptions.randomizeSigils != RandomizeSigils.Disable)
+                        if (modCurrent.abilities.Count > 0)
                         {
-                            if (modCurrent.abilities.Count > 0)
+                            int moddedAbilityCount = modCurrent.abilities.Count;
+                            if (modCurrent.abilities.Contains(Ability.PermaDeath))
+                                modCurrent.attackAdjustment--;
+                            modCurrent.abilities = new List<Ability>();
+                            for (int l = 0; l < moddedAbilityCount; l++)
                             {
-                                int moddedAbilityCount = modCurrent.abilities.Count;
-                                if (modCurrent.abilities.Contains(Ability.PermaDeath))
-                                    modCurrent.attackAdjustment--;
-                                modCurrent.abilities = new List<Ability>();
-                                for (int l = 0; l < moddedAbilityCount; l++)
+                                learnedAbilities.RemoveAll(x => card.HasAbility(x.ability));
+                                if (learnedAbilities.Count > 0)
                                 {
-                                    learnedAbilities.RemoveAll(x => card.HasAbility(x.ability));
-                                    if (learnedAbilities.Count > 0)
-                                    {
-                                        Ability ab = learnedAbilities[SeededRandom.Range(0, learnedAbilities.Count, seed++)].ability;
-                                        modCurrent.abilities.Add(ab);
+                                    Ability ab = learnedAbilities[SeededRandom.Range(0, learnedAbilities.Count, seed++)].ability;
+                                    modCurrent.abilities.Add(ab);
 
-                                        if (ab == Ability.PermaDeath)
-                                            modCurrent.attackAdjustment++;
-                                    }
+                                    if (ab == Ability.PermaDeath)
+                                        modCurrent.attackAdjustment++;
                                 }
                             }
                         }

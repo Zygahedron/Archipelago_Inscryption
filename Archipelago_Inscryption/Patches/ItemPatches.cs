@@ -178,52 +178,6 @@ namespace Archipelago_Inscryption.Patches
             }
             return true;
         }
-
-        [HarmonyPatch(typeof(HoloMapArea), "Start")]
-        [HarmonyPrefix]
-        static void OpenShortcuts(HoloMapArea __instance)
-        {
-            if (ArchipelagoOptions.randomizeShortcuts != RandomizeShortcuts.Vanilla)
-                switch (__instance.name)
-                {
-                    case "HoloMapArea_UndeadMainPath_2(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.FilthyCorpseWorldShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_E").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                    case "HoloMapArea_UndeadShortcut_Exit(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.FilthyCorpseWorldShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_S").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                    case "HoloMapArea_NatureMainPath_4(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.FoulBackwaterShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_S").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                    case "HoloMapArea_NatureEntrance(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.FoulBackwaterShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_N").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                    case "HoloMapArea_WizardMainPath_5(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.GaudyGemLandShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_W").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                    case "HoloMapArea_WizardSouthSidePath(Clone)":
-                        if (ArchipelagoManager.HasItem(APItem.GaudyGemLandShortcut) || ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open) {
-                            __instance.transform.Find("Nodes/MoveArea_S").gameObject.SetActive(true);
-                            __instance.transform.Find("HoloStopIcon").gameObject.SetActive(false);
-                        }
-                        break;
-                }
-        }
     }
     
     [HarmonyPatch]

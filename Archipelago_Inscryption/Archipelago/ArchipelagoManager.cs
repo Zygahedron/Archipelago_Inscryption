@@ -61,7 +61,10 @@ namespace Archipelago_Inscryption.Archipelago
             { APItem.BoneLordFemur,                     StoryEvent.GBCBoneFound },
             { APItem.GBCCloverPlant,                    StoryEvent.GBCCloverFound },
             { APItem.FishbotCard,                       StoryEvent.TalkingAnglerCardDiscovered },
-            { APItem.LonelyWizbotCard,                  StoryEvent.TalkingBlueMageCardDiscovered }
+            { APItem.LonelyWizbotCard,                  StoryEvent.TalkingBlueMageCardDiscovered },
+            { APItem.FoulBackwaterShortcut,             StoryEvent.NatureHoloShortcut},
+            { APItem.FilthyCorpseWorldShortcut,         StoryEvent.UndeadHoloShortcut},
+            { APItem.GaudyGemLandShortcut,              StoryEvent.WizardHoloShortcut}
         };
 
         // When one of the following items is received, add the associated card(s) to the deck.
@@ -438,6 +441,10 @@ namespace Archipelago_Inscryption.Archipelago
 
             if (ArchipelagoOptions.skipTutorial && !StoryEventsData.EventCompleted(StoryEvent.TutorialRun3Completed))
                 ArchipelagoOptions.SkipTutorial();
+            if (ArchipelagoOptions.randomizeShortcuts == RandomizeShortcuts.Open && !StoryEventsData.EventCompleted(StoryEvent.WizardHoloShortcut))
+                StoryEventsData.SetEventCompleted(StoryEvent.NatureHoloShortcut, false, false);
+                StoryEventsData.SetEventCompleted(StoryEvent.UndeadHoloShortcut, false, false);
+                StoryEventsData.SetEventCompleted(StoryEvent.WizardHoloShortcut, false, false);
 
             ScoutChecks();
             VerifyGoalCompletion();
